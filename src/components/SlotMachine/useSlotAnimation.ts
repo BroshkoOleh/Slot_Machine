@@ -6,10 +6,7 @@ interface ReelState {
   previousPosition: number;
 }
 
-export const useSlotAnimation = (
-  reelCount: number = 5
-  // visibleSymbolsCount: number = 3
-) => {
+export const useSlotAnimation = (reelCount: number = 5) => {
   const [reels, setReels] = useState<ReelState[]>([]);
   const [running, setRunning] = useState(false);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
@@ -106,6 +103,5 @@ export const useSlotAnimation = (
     reels,
     running,
     startPlay,
-    // visibleSymbolsCount,
   };
 };

@@ -3,18 +3,20 @@ import { Graphics as PIXIGraphics, TextStyle, Assets } from "pixi.js";
 import { useCallback, useMemo, useEffect, useState } from "react";
 import { SlotReel } from "../SlotReel/SlotReel";
 import { useSlotAnimation } from "./useSlotAnimation";
-
+import {
+  VISIBLE_SYMBOLS_COUNT_HORIZONTAL,
+  VISIBLE_SYMBOLS_COUNT_VERTICAL,
+} from "../../helpers/constants/constants";
 interface ISlotMachineProps {
   canvasSize: {
     width: number;
     height: number;
   };
+  SYMBOL_CONTAINER_WIDTH: number;
 }
 
-const REEL_WIDTH = 105; //idents beside symbola
-const SYMBOL_SIZE = 100; // size of symbols
-const VISIBLE_SYMBOLS_COUNT_VERTICAL = 5; // number of symbols vertically
-const VISIBLE_SYMBOLS_COUNT_HORIZONTAL = 6; // number of symbols horizontally
+// const VISIBLE_SYMBOLS_COUNT_VERTICAL = 5; // number of symbols vertically
+// const VISIBLE_SYMBOLS_COUNT_HORIZONTAL = 6; // number of symbols horizontally
 
 const SYMBOL_ASSETS = {
   bundle: "slot-symbols",
@@ -51,7 +53,21 @@ const SYMBOL_KEYS = [
   "img12",
 ];
 
-export const SlotMachine = ({ canvasSize }: ISlotMachineProps) => {
+export const SlotMachine = ({
+  canvasSize,
+  SYMBOLS_CONTAINER_WIDTH,
+}: ISlotMachineProps) => {
+  const SYMBOL_SIZE = Math.round(
+    Math.min(
+      canvasSize.width / VISIBLE_SYMBOLS_COUNT_HORIZONTAL,
+      canvasSize.height / VISIBLE_SYMBOLS_COUNT_VERTICAL
+    )
+  );
+
+  console.log("SYMBOL_SIZE SlotMachine", SYMBOL_SIZE);
+
+  const REEL_WIDTH = SYMBOLS_CONTAINER_WIDTH / VISIBLE_SYMBOLS_COUNT_HORIZONTAL; //idents beside symbola
+
   const {
     reels,
     startPlay,
@@ -116,7 +132,7 @@ export const SlotMachine = ({ canvasSize }: ISlotMachineProps) => {
       );
       g.endFill();
     },
-    [canvasSize]
+    [canvasSize, SYMBOL_SIZE]
   );
 
   const drawSpinButton = useCallback(
@@ -179,7 +195,7 @@ export const SlotMachine = ({ canvasSize }: ISlotMachineProps) => {
 
   const reelContainerX =
     (canvasSize.width - REEL_WIDTH * VISIBLE_SYMBOLS_COUNT_HORIZONTAL) / 2;
-
+  console.log("reelContainerX", reelContainerX);
   const reelContainerY =
     canvasSize.height / 2 -
     (SYMBOL_SIZE * (VISIBLE_SYMBOLS_COUNT_VERTICAL - 1)) / 2;
@@ -200,7 +216,7 @@ export const SlotMachine = ({ canvasSize }: ISlotMachineProps) => {
 
   return (
     <Container>
-      <Container x={reelContainerX} y={reelContainerY}>
+      <Container x={0} y={reelContainerY}>
         {reels.map((reel, i) => (
           <SlotReel
             key={i}
@@ -222,7 +238,7 @@ export const SlotMachine = ({ canvasSize }: ISlotMachineProps) => {
         y={Math.round(margin / 3)}
       /> */}
 
-      <Graphics draw={drawBottomCover} />
+      {/* <Graphics draw={drawBottomCover} /> */}
 
       <Graphics draw={drawSpinButton} />
 
